@@ -37,9 +37,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true
       ),
-      home: ProductDetailsPage(
-        product: products[0],
-      ),
+      home: const HomePage(),
     );
   }
 }
