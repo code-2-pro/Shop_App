@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:shop_app/global_varibales.dart';
-import 'package:shop_app/product_card.dart';
-import 'package:shop_app/product_details_page.dart';
+import 'package:shop_app/widgets/product_card.dart';
+import 'package:shop_app/pages/product_details_page.dart';
 
 class ProductList extends StatefulWidget {
   const ProductList({super.key});
@@ -38,9 +39,9 @@ class _ProductListState extends State<ProductList> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
-              Expanded(
+              const Expanded(
                 child: TextField(
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Search',
                     prefixIcon: Icon(Icons.search),
                     border: border,
@@ -90,30 +91,68 @@ class _ProductListState extends State<ProductList> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                final product = products[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ProductDetailsPage(product: product);
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth > 1080) {
+                  return GridView.builder(
+                    itemCount: products.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1.75,
+                        ),
+                    itemBuilder: (context, index) {
+                      final product = products[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return ProductDetailsPage(product: product);
+                              },
+                            ),
+                          );
                         },
-                      ),
-                    );
-                  },
-                  child: ProductCard(
-                    title: product['title'] as String,
-                    price: product['price'] as double,
-                    image: product['imageUrl'] as String,
-                    backgroundColor:
-                        index.isEven
-                            ? const Color.fromRGBO(216, 240, 253, 1)
-                            : const Color.fromRGBO(245, 247, 249, 1),
-                  ),
-                );
+                        child: ProductCard(
+                          title: product['title'] as String,
+                          price: product['price'] as double,
+                          image: product['imageUrl'] as String,
+                          backgroundColor:
+                              index.isEven
+                                  ? const Color.fromRGBO(216, 240, 253, 1)
+                                  : const Color.fromRGBO(245, 247, 249, 1),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return ListView.builder(
+                    itemCount: products.length,
+                    itemBuilder: (context, index) {
+                      final product = products[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return ProductDetailsPage(product: product);
+                              },
+                            ),
+                          );
+                        },
+                        child: ProductCard(
+                          title: product['title'] as String,
+                          price: product['price'] as double,
+                          image: product['imageUrl'] as String,
+                          backgroundColor:
+                              index.isEven
+                                  ? const Color.fromRGBO(216, 240, 253, 1)
+                                  : const Color.fromRGBO(245, 247, 249, 1),
+                        ),
+                      );
+                    },
+                  );
+                }
               },
             ),
           ),
